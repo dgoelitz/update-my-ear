@@ -1,10 +1,62 @@
 html {
   color: greenyellow;
-  background-color: darkslategray;
+  background-color: #282625;
 }
 
 img {
-  width: 128px;
+  height: 96px;
+  padding: 10px;
+}
+
+a:link {
+  color: greenyellow;
+  text-decoration: none;
+}
+
+a:visited {
+  color: green;
+  text-decoration: none;
+}
+
+a:hover {
+  color: greenyellow;
+  text-decoration: none;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  text-align: center;
+}
+
+.title {
+  width: 30%;
+  height: 30%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.date {
+  text-align: center;
+  color: gray;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  white-space:nowrap;
+}
+
+.text {
+  display: inline-block;
+  padding-left: 20px;
+  line-height: 96px;
+  vertical-align: middle;
+}
+
+.tracks {
+  color: gray;
 }
 
 .App-logo {
