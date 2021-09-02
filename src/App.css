@@ -1,31 +1,31 @@
 html {
-  color: greenyellow;
+  color: #AEA037;
   background-color: #282625;
 }
 
 img {
-  height: 96px;
-  padding: 10px;
+  height: 192px;
+  padding: 10px 5px 0 5px;
 }
 
 a:link {
-  color: greenyellow;
+  color: #AEA037;
   text-decoration: none;
 }
 
 a:visited {
-  color: green;
+  color: #AD7D2D;
   text-decoration: none;
 }
 
 a:hover {
-  color: greenyellow;
+  color: #AEA037;
   text-decoration: none;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   text-align: center;
 }
 
@@ -37,59 +37,25 @@ a:hover {
   margin-right: auto;
 }
 
+.title-main {
+  width: 40%;
+  height: 40%;
+}
+
 .date {
   text-align: center;
   color: gray;
 }
 
 .card {
-  display: flex;
   align-items: center;
-  white-space:nowrap;
+  white-space: nowrap;
 }
 
 .text {
-  display: inline-block;
-  padding-left: 20px;
-  line-height: 96px;
-  vertical-align: middle;
+  margin-top: 0px;
 }
 
 .tracks {
   color: gray;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }

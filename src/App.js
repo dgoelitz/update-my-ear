@@ -5,7 +5,9 @@ import GetDate from './GetDate.js';
 import Card from './Card.js';
 import Title from './title.png';
 import Subtitle from './subtitle.png';
-const token = "Bearer BQDmqSLvoFf-nMwpeRGd1CxrSpCWxwy99ElXIH378OILxssoDq2xHATgYVP_WXYfx3eWOjHWgEBO3fhcJOU";
+import auth from './auth.js';
+
+let token = '';
 
 class App extends React.Component {
 
@@ -24,20 +26,41 @@ class App extends React.Component {
   }
 
   callAPI(offset, indie) {
-    const defaultOptions = {
+
+    let urlencoded = new URLSearchParams();
+    urlencoded.append("grant_type", "client_credentials");
+
+    const tokenOptions = {
+      method: 'POST',
       headers: {
-        'Authorization': token,
+        'Authorization': auth,
+        'Content-Type': 'application/x-www-form-urlencoded'
       },
-    };
+      body: urlencoded,
+    }
+
+    const getAuth = async () => {
+      let url = 'https://accounts.spotify.com/api/token';
+      const response = await fetch(url, tokenOptions);
+      const myJson = await response.json();
+      token = 'Bearer ' + myJson.access_token;
+      userAction(offset, indie);
+    }
 
     const userAction = async (offset, hipster) => {
+      const apiCallOptions = {
+        headers: {
+          'Authorization': token,
+        },
+      };
       let url = `https://api.spotify.com/v1/search?query=+tag:new${hipster}&type=album&offset=${offset}&limit=50`;
-      const response = await fetch(url, defaultOptions);
+      const response = await fetch(url, apiCallOptions);
       const myJson = await response.json();
       this.compile(myJson, offset);
     }
 
-    userAction(offset, indie);
+    if (!token) getAuth();
+    else userAction(offset, indie);
   };
 
   compile = ((returnedFromAPI, offset) => {
@@ -47,6 +70,7 @@ class App extends React.Component {
     let statsArr = [];
     // let genre = [];
     const items = returnedFromAPI.albums.items;
+    for (let i = 0; i < items.length; i++) if (items[i] === null) items.splice(i, 1);
     for (let i = 0; i < items.length; i++) items[i].release_date = items[i].release_date.replace(/-/g, '');
     for (let i = 0; i < items.length; i++) stats[items[i].release_date] = (stats[items[i].release_date] || 0) + 1;
     for (let key in stats) statsArr.push([key, stats[key]]);
@@ -60,6 +84,8 @@ class App extends React.Component {
       obj.link = items[i].external_urls.spotify;
       obj.artistLink = items[i].artists[0].external_urls.spotify;
       obj.tracks = items[i].total_tracks;
+      if (obj.artist.length > 26) obj.artist = obj.artist.slice(0, 25) + '...';
+      if (obj.album.length > 26) obj.album = obj.album.slice(0, 25) + '...';
       data[items[i].release_date] = data[items[i].release_date] || [];
       data[items[i].release_date].push(obj);
     }
@@ -80,20 +106,20 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <img className="title" src={Title} alt="update my ear" />
+        <img className="title title-main" src={Title} alt="update my ear" />
         <img className="title" src={Subtitle} alt="update my ear" />
-        <button className="button" onClick={this.indie}>Indie Mode</button>
+        {/* <button className="button" onClick={this.indie}>Indie Mode</button> */}
         {this.state.finalList.map(item => {
           for (let key in item) {
             return (
               <div>
                 <p className="date">{GetDate(key, this.state.data[key].length)}</p>
                 <div className="grid">
-                {item[key].map(track => {
-                  return (
-                    <Card track={track} />
-                  )
-                })}
+                  {item[key].map(track => {
+                    return (
+                      <Card track={track} />
+                    )
+                  })}
                 </div>
               </div>
             )

@@ -22,6 +22,7 @@ const GetDate = ((date, count) => {
   if (day[1] === '2') suffix = 'nd';
   if (day[1] === '3') suffix = 'rd';
   if (day[0] === '1') suffix = 'th';
+  if (day[0] === '0') day = day[1];
   return `${month} ${day}${suffix}, ${year} (${count})`;
 });
 
