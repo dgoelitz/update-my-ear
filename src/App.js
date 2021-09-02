@@ -16,7 +16,8 @@ class App extends React.Component {
     this.state = {
       stats: {},
       data: {},
-      finalList: []
+      finalList: [],
+      loading: <p className="date">Please wait for albums to load...</p>,
     };
     this.indie = this.indie.bind(this);
   }
@@ -95,7 +96,10 @@ class App extends React.Component {
       this.callAPI(offset, '');
     }
     else {
-      this.setState({ finalList: Wrangle(this.state.data) });
+      this.setState({ 
+        finalList: Wrangle(this.state.data),
+        loading: null,
+      });
     }
   });
 
@@ -108,6 +112,7 @@ class App extends React.Component {
       <div className="App">
         <img className="title title-main" src={Title} alt="update my ear" />
         <img className="title" src={Subtitle} alt="update my ear" />
+        {this.state.loading}
         {/* <button className="button" onClick={this.indie}>Indie Mode</button> */}
         {this.state.finalList.map(item => {
           for (let key in item) {
