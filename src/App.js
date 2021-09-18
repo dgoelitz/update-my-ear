@@ -18,16 +18,18 @@ class App extends React.Component {
       data: {},
       finalList: [],
       loading: <p className="date">Please wait for albums to load...</p>,
+      callCounter: 0,
     };
     this.indie = this.indie.bind(this);
   }
 
   componentDidMount() {
+    this.getToken();
     this.callAPI(0, '');
   }
 
-  callAPI(offset, indie) {
-
+  getToken() {
+    console.log('we\'s gettin da token');
     let urlencoded = new URLSearchParams();
     urlencoded.append("grant_type", "client_credentials");
 
@@ -45,8 +47,33 @@ class App extends React.Component {
       const response = await fetch(url, tokenOptions);
       const myJson = await response.json();
       token = 'Bearer ' + myJson.access_token;
-      userAction(offset, indie);
+      // userAction(offset, indie);
     }
+
+    if (!token) getAuth();
+  }
+
+  callAPI(offset, indie) {
+
+    // let urlencoded = new URLSearchParams();
+    // urlencoded.append("grant_type", "client_credentials");
+
+    // const tokenOptions = {
+    //   method: 'POST',
+    //   headers: {
+    //     'Authorization': auth,
+    //     'Content-Type': 'application/x-www-form-urlencoded'
+    //   },
+    //   body: urlencoded,
+    // }
+
+    // const getAuth = async () => {
+    //   let url = 'https://accounts.spotify.com/api/token';
+    //   const response = await fetch(url, tokenOptions);
+    //   const myJson = await response.json();
+    //   token = 'Bearer ' + myJson.access_token;
+    //   userAction(offset, indie);
+    // }
 
     const userAction = async (offset, hipster) => {
       const apiCallOptions = {
@@ -60,12 +87,13 @@ class App extends React.Component {
       this.compile(myJson, offset);
     }
 
-    if (!token) getAuth();
-    else userAction(offset, indie);
+    // if (!token) getAuth();
+    // else userAction(offset, indie);
+    userAction(offset, indie);
   };
 
   compile = ((returnedFromAPI, offset) => {
-    console.log(returnedFromAPI);
+    // console.log(returnedFromAPI);
     let data = this.state.data;
     let stats = this.state.stats;
     let statsArr = [];
