@@ -7,7 +7,8 @@ import Title from './title.png';
 import Subtitle from './subtitle.png';
 import auth from './auth.js';
 
-let token = '';
+let token = '',
+returnedFromAPI = [];
 
 class App extends React.Component {
 
@@ -18,18 +19,15 @@ class App extends React.Component {
       data: {},
       finalList: [],
       loading: <p className="date">Please wait for albums to load...</p>,
-      callCounter: 0,
     };
     this.indie = this.indie.bind(this);
   }
 
   componentDidMount() {
     this.getToken();
-    this.callAPI(0, '');
   }
 
   getToken() {
-    console.log('we\'s gettin da token');
     let urlencoded = new URLSearchParams();
     urlencoded.append("grant_type", "client_credentials");
 
@@ -47,33 +45,14 @@ class App extends React.Component {
       const response = await fetch(url, tokenOptions);
       const myJson = await response.json();
       token = 'Bearer ' + myJson.access_token;
-      // userAction(offset, indie);
+
+      for (let i = 0; i <= 950; i += 50) this.callAPI(i, '');
     }
 
     if (!token) getAuth();
   }
 
   callAPI(offset, indie) {
-
-    // let urlencoded = new URLSearchParams();
-    // urlencoded.append("grant_type", "client_credentials");
-
-    // const tokenOptions = {
-    //   method: 'POST',
-    //   headers: {
-    //     'Authorization': auth,
-    //     'Content-Type': 'application/x-www-form-urlencoded'
-    //   },
-    //   body: urlencoded,
-    // }
-
-    // const getAuth = async () => {
-    //   let url = 'https://accounts.spotify.com/api/token';
-    //   const response = await fetch(url, tokenOptions);
-    //   const myJson = await response.json();
-    //   token = 'Bearer ' + myJson.access_token;
-    //   userAction(offset, indie);
-    // }
 
     const userAction = async (offset, hipster) => {
       const apiCallOptions = {
@@ -84,21 +63,19 @@ class App extends React.Component {
       let url = `https://api.spotify.com/v1/search?query=+tag:new${hipster}&type=album&offset=${offset}&limit=50`;
       const response = await fetch(url, apiCallOptions);
       const myJson = await response.json();
-      this.compile(myJson, offset);
+      returnedFromAPI.push(myJson);
+      if (returnedFromAPI.length === 20) this.compile();
     }
 
-    // if (!token) getAuth();
-    // else userAction(offset, indie);
     userAction(offset, indie);
   };
 
-  compile = ((returnedFromAPI, offset) => {
-    // console.log(returnedFromAPI);
-    let data = this.state.data;
-    let stats = this.state.stats;
+  compile = (() => {
+    let data = {};
+    let stats = {};
     let statsArr = [];
-    // let genre = [];
-    const items = returnedFromAPI.albums.items;
+    let items = [];
+    for (let i = 0; i < returnedFromAPI.length; i++) items = items.concat(returnedFromAPI[i].albums.items);
     for (let i = 0; i < items.length; i++) if (items[i] === null) items.splice(i, 1);
     for (let i = 0; i < items.length; i++) items[i].release_date = items[i].release_date.replace(/-/g, '');
     for (let i = 0; i < items.length; i++) stats[items[i].release_date] = (stats[items[i].release_date] || 0) + 1;
@@ -118,17 +95,11 @@ class App extends React.Component {
       data[items[i].release_date] = data[items[i].release_date] || [];
       data[items[i].release_date].push(obj);
     }
-    this.setState({ data: data });
-    if (offset < 950) {
-      offset += 50;
-      this.callAPI(offset, '');
-    }
-    else {
       this.setState({ 
-        finalList: Wrangle(this.state.data),
+        data: data,
+        finalList: Wrangle(data),
         loading: null,
       });
-    }
   });
 
   indie = (() => {
