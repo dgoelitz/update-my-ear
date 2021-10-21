@@ -1,2 +1,0 @@
-let auth = 'Basic OWIxY2QyMDlkOGU4NDlmMzk2ZjNkOGYyZjUxYTc1ZTM6YjVjZmU5NjUyMWI3NDRlNGI5YWRkYjU1Mzc5MjViMDM=';
-export default auth;

@@ -5,8 +5,8 @@ import GetDate from './GetDate.js';
 import Card from './Card.js';
 import Title from './title.png';
 import Subtitle from './subtitle.png';
-import auth from './auth.js';
 
+const AUTH = process.env.REACT_APP_AUTH;
 let token = '',
 returnedFromAPI = [];
 
@@ -34,7 +34,7 @@ class App extends React.Component {
     const tokenOptions = {
       method: 'POST',
       headers: {
-        'Authorization': auth,
+        'Authorization': AUTH,
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: urlencoded,
@@ -53,7 +53,6 @@ class App extends React.Component {
   }
 
   callAPI(offset, indie) {
-
     const userAction = async (offset, hipster) => {
       const apiCallOptions = {
         headers: {
