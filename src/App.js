@@ -5,6 +5,7 @@ import GetDate from './GetDate.js';
 import Card from './Card.js';
 import Title from './title.png';
 import Subtitle from './subtitle.png';
+import {} from 'dotenv/config';
 
 const AUTH = process.env.REACT_APP_AUTH;
 let token = '',
