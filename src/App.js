@@ -26,6 +26,7 @@ class App extends React.Component {
 
   componentDidMount() {
     this.getToken();
+    console.log(AUTH);
   }
 
   getToken() {
