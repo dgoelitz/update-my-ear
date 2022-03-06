@@ -2,21 +2,21 @@ import './App.css';
 import React from 'react';
 import Wrangle from './WrangleData.js';
 import GetDate from './GetDate.js';
+import RemoveDuplicates from './RemoveDuplicates';
 import Card from './Card.js';
 import Title from './title.png';
 import Subtitle from './subtitle.png';
-import {} from 'dotenv/config';
+import { } from 'dotenv/config';
 
 const AUTH = process.env.REACT_APP_AUTH;
 let token = '',
-returnedFromAPI = [];
+  returnedFromAPI = [];
 
 class App extends React.Component {
 
   constructor() {
     super();
     this.state = {
-      data: {},
       finalList: [],
       loading: <p className="date">Please wait for albums to load...</p>,
     };
@@ -92,11 +92,13 @@ class App extends React.Component {
       data[items[i].release_date] = data[items[i].release_date] || [];
       data[items[i].release_date].push(obj);
     }
-      this.setState({ 
-        data: data,
-        finalList: Wrangle(data),
-        loading: null,
-      });
+    this.setState({
+      finalList: Wrangle(data),
+      loading: null,
+    });
+    this.setState({
+      finalList: RemoveDuplicates(this.state.finalList),
+    })
   });
 
   indie = (() => {
@@ -114,7 +116,7 @@ class App extends React.Component {
           for (let key in item) {
             return (
               <div>
-                <p className="date">{GetDate(key, this.state.data[key].length)}</p>
+                <p className="date">{GetDate(key, item[key].length)}</p>
                 <div className="grid">
                   {item[key].map(track => {
                     return (
