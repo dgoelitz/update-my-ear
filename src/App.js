@@ -16,7 +16,6 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      stats: {},
       data: {},
       finalList: [],
       loading: <p className="date">Please wait for albums to load...</p>,
@@ -72,17 +71,14 @@ class App extends React.Component {
 
   compile = (() => {
     let data = {};
-    let stats = {};
-    let statsArr = [];
     let items = [];
     for (let i = 0; i < returnedFromAPI.length; i++) items = items.concat(returnedFromAPI[i].albums.items);
-    for (let i = 0; i < items.length; i++) if (items[i] === null) items.splice(i, 1);
-    for (let i = 0; i < items.length; i++) items[i].release_date = items[i].release_date.replace(/-/g, '');
-    for (let i = 0; i < items.length; i++) stats[items[i].release_date] = (stats[items[i].release_date] || 0) + 1;
-    for (let key in stats) statsArr.push([key, stats[key]]);
-    statsArr.sort((a, b) => b[0] - a[0]);
-    this.setState({ stats: stats });
     for (let i = 0; i < items.length; i++) {
+      if (items[i] === null) {
+        items.splice(i, 1);
+        i--;
+        continue;
+      }
       let obj = {};
       obj.image = items[i].images[0].url;
       obj.artist = items[i].artists[0].name;
@@ -92,6 +88,7 @@ class App extends React.Component {
       obj.tracks = items[i].total_tracks;
       if (obj.artist.length > 26) obj.artist = obj.artist.slice(0, 25) + '...';
       if (obj.album.length > 26) obj.album = obj.album.slice(0, 25) + '...';
+      items[i].release_date = items[i].release_date.replace(/-/g, '');
       data[items[i].release_date] = data[items[i].release_date] || [];
       data[items[i].release_date].push(obj);
     }
