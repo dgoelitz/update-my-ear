@@ -3,6 +3,7 @@ import React from 'react';
 import Wrangle from './WrangleData.js';
 import GetDate from './GetDate.js';
 import RemoveDuplicates from './RemoveDuplicates';
+import NewRelease from './NewRelease';
 import Card from './Card.js';
 import Title from './title.png';
 import Subtitle from './subtitle.png';
@@ -70,6 +71,7 @@ class App extends React.Component {
   };
 
   compile = (() => {
+    console.log(returnedFromAPI);
     let data = {};
     let items = [];
     for (let i = 0; i < returnedFromAPI.length; i++) items = items.concat(returnedFromAPI[i].albums.items);
@@ -86,6 +88,9 @@ class App extends React.Component {
       obj.link = items[i].external_urls.spotify;
       obj.artistLink = items[i].artists[0].external_urls.spotify;
       obj.tracks = items[i].total_tracks;
+      obj.artistId = items[i].artists[0].id
+      obj.type = items[i].type;
+      obj.border = '0';
       if (obj.artist.length > 26) obj.artist = obj.artist.slice(0, 25) + '...';
       if (obj.album.length > 26) obj.album = obj.album.slice(0, 25) + '...';
       items[i].release_date = items[i].release_date.replace(/-/g, '');
@@ -99,6 +104,10 @@ class App extends React.Component {
     this.setState({
       finalList: RemoveDuplicates(this.state.finalList),
     })
+    const withBorders = NewRelease(this.state.finalList, token);
+    this.setState({
+      finalList: withBorders,
+    })
   });
 
   indie = (() => {
@@ -109,7 +118,7 @@ class App extends React.Component {
     return (
       <div className="App">
         <img className="title title-main" src={Title} alt="update my ear" />
-        <img className="title" src={Subtitle} alt="update my ear" />
+        <img className="title" src={Subtitle} alt="new releases from Spotify" />
         {this.state.loading}
         {/* <button className="button" onClick={this.indie}>Indie Mode</button> */}
         {this.state.finalList.map(item => {
