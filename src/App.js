@@ -10,7 +10,8 @@ import { } from 'dotenv/config';
 
 const AUTH = process.env.REACT_APP_AUTH;
 let token = '',
-  returnedFromAPI = [];
+  returnedFromAPI = [],
+  currentListHipster = false;
 
 class App extends React.Component {
 
@@ -18,6 +19,8 @@ class App extends React.Component {
     super();
     this.state = {
       finalList: [],
+      hipsterList: [],
+      list: [],
       loading: <p className="date">Please wait for albums to load...</p>,
     };
     this.indie = this.indie.bind(this);
@@ -63,13 +66,13 @@ class App extends React.Component {
       const response = await fetch(url, apiCallOptions);
       const myJson = await response.json();
       returnedFromAPI.push(myJson);
-      if (returnedFromAPI.length === 20) this.compile();
+      if (returnedFromAPI.length === 20) this.compile(hipster);
     }
 
     userAction(offset, indie);
   };
 
-  compile = (() => {
+  compile = ((hipster) => {
     let data = {};
     let items = [];
     for (let i = 0; i < returnedFromAPI.length; i++) items = items.concat(returnedFromAPI[i].albums.items);
@@ -86,33 +89,58 @@ class App extends React.Component {
       obj.link = items[i].external_urls.spotify;
       obj.artistLink = items[i].artists[0].external_urls.spotify;
       obj.tracks = items[i].total_tracks;
+      obj.artistId = items[i].artists[0].id
+      obj.type = items[i].type;
+      obj.border = '0';
       if (obj.artist.length > 26) obj.artist = obj.artist.slice(0, 25) + '...';
       if (obj.album.length > 26) obj.album = obj.album.slice(0, 25) + '...';
       items[i].release_date = items[i].release_date.replace(/-/g, '');
       data[items[i].release_date] = data[items[i].release_date] || [];
       data[items[i].release_date].push(obj);
     }
-    this.setState({
-      finalList: Wrangle(data),
-      loading: null,
-    });
-    this.setState({
-      finalList: RemoveDuplicates(this.state.finalList),
-    })
+    if (hipster) {
+      this.setState({
+        hipsterList: Wrangle(data)
+      });
+      this.setState({
+        hipsterList: RemoveDuplicates(this.state.hipsterList),
+        list: this.state.hipsterList,
+      })
+    }
+    else {
+      this.setState({
+        finalList: Wrangle(data),
+        loading: null,
+      });
+      this.setState({
+        finalList: RemoveDuplicates(this.state.finalList),
+        list: this.state.finalList,
+      });
+    }
   });
 
   indie = (() => {
-    this.callAPI(0, '+tag:hipster');
+    if (currentListHipster) {
+      this.setState({ list: this.state.finalList });
+      currentListHipster = false;
+      return;
+    }
+    if (this.state.hipsterList.length === 0) {
+      returnedFromAPI = [];
+      for (let i = 0; i <= 950; i += 50) this.callAPI(i, '+tag:hipster');
+    }
+    this.setState({ list: this.state.hipsterList });
+    currentListHipster = true;
   })
 
   render() {
     return (
       <div className="App">
         <img className="title title-main" src={Title} alt="update my ear" />
-        <img className="title" src={Subtitle} alt="update my ear" />
+        <img className="title" src={Subtitle} alt="new releases from Spotify" />
         {this.state.loading}
-        {/* <button className="button" onClick={this.indie}>Indie Mode</button> */}
-        {this.state.finalList.map(item => {
+        {<button className="button" onClick={this.indie}>{currentListHipster ? 'Standard' : 'Indie Mode'}</button>}
+        {this.state.list.map(item => {
           for (let key in item) {
             return (
               <div>

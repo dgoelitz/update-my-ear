@@ -58,3 +58,12 @@ a:hover {
 .tracks {
   color: gray;
 }
+
+.button {
+  position: fixed;
+  top: 0;
+  background-color: #AEA037;
+  color: white;
+  border-radius: 4px;
+  width: 85px;
+}
