@@ -3,6 +3,9 @@
   "version": "0.2.0",
   "private": true,
   "author": "davidgoelitz@gmail.com",
+  "engines": {
+    "node": "14.15.3"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
