@@ -21,12 +21,14 @@ class App extends React.Component {
       finalList: [],
       hipsterList: [],
       list: [],
+      indie: false,
       loading: <p className="date">Please wait for albums to load...</p>,
     };
     this.indie = this.indie.bind(this);
   }
 
   componentDidMount() {
+    console.log("did mount");
     this.getToken();
   }
 
@@ -66,6 +68,7 @@ class App extends React.Component {
       const response = await fetch(url, apiCallOptions);
       const myJson = await response.json();
       returnedFromAPI.push(myJson);
+      console.log(returnedFromAPI);
       if (returnedFromAPI.length === 20) this.compile(hipster);
     }
 
@@ -77,13 +80,14 @@ class App extends React.Component {
     let items = [];
     for (let i = 0; i < returnedFromAPI.length; i++) items = items.concat(returnedFromAPI[i].albums.items);
     for (let i = 0; i < items.length; i++) {
+      console.log(i);
       if (items[i] === null) {
         items.splice(i, 1);
         i--;
         continue;
       }
       let obj = {};
-      obj.image = items[i].images[0].url;
+      obj.image = items[i].images[1].url;
       obj.artist = items[i].artists[0].name;
       obj.album = items[i].name;
       obj.link = items[i].external_urls.spotify;
@@ -91,7 +95,6 @@ class App extends React.Component {
       obj.tracks = items[i].total_tracks;
       obj.artistId = items[i].artists[0].id
       obj.type = items[i].type;
-      obj.border = '0';
       if (obj.artist.length > 26) obj.artist = obj.artist.slice(0, 25) + '...';
       if (obj.album.length > 26) obj.album = obj.album.slice(0, 25) + '...';
       items[i].release_date = items[i].release_date.replace(/-/g, '');
@@ -114,9 +117,10 @@ class App extends React.Component {
       });
       this.setState({
         finalList: RemoveDuplicates(this.state.finalList),
-        list: this.state.finalList,
+        //list: this.state.finalList,
       });
     }
+    console.log('finished compiles');
   });
 
   indie = (() => {
@@ -133,6 +137,10 @@ class App extends React.Component {
     currentListHipster = true;
   })
 
+  listToDisplay = (() => {
+    return this.state.indie ? this.state.hipsterList : this.state.finalList;
+  })
+
   render() {
     return (
       <div className="App">
@@ -140,15 +148,15 @@ class App extends React.Component {
         <img className="title" src={Subtitle} alt="new releases from Spotify" />
         {this.state.loading}
         {<button className="button" onClick={this.indie}>{currentListHipster ? 'Standard' : 'Indie Mode'}</button>}
-        {this.state.list.map(item => {
+        {this.listToDisplay().map(item => {
           for (let key in item) {
             return (
-              <div>
+              <div key={`childkey${key}`}>
                 <p className="date">{GetDate(key, item[key].length)}</p>
                 <div className="grid">
                   {item[key].map(track => {
                     return (
-                      <Card track={track} />
+                      <Card key={`childkey${track.link + key}`} track={track} />
                     )
                   })}
                 </div>

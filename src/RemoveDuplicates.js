@@ -1,4 +1,5 @@
 const RemoveDuplicates = ((data) => {
+  console.log('removing duplicates');
   for (let i = 0; i < data.length; i++) {
     for (let key in data[i]) {
       let current = data[i][key];
@@ -15,6 +16,7 @@ const RemoveDuplicates = ((data) => {
       }
     }
   }
+  console.log('done deduping');
   return data;
 })
 
