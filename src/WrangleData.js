@@ -1,6 +1,5 @@
 const Wrangle = ((data) => {
   let list = [];
-  console.log('wrangling');
   for (let key in data) {
     let obj = {};
     obj[key] = [];

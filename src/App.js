@@ -25,7 +25,6 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    console.log("did mount");
     this.getToken();
   }
 
@@ -65,7 +64,6 @@ class App extends React.Component {
       const response = await fetch(url, apiCallOptions);
       const myJson = await response.json();
       returnedFromAPI.push(myJson);
-      console.log(returnedFromAPI);
       if (returnedFromAPI.length === 20) this.compile(hipster);
     }
 
@@ -99,25 +97,17 @@ class App extends React.Component {
       data[items[i].release_date] = data[items[i].release_date] || [];
       data[items[i].release_date].push(obj);
     }
-    console.log("dataaaa", data);
     if (hipster) {
       this.setState({
         hipsterList: Wrangle(data)
       });
-      // this.setState({
-      //   hipsterList: RemoveDuplicates(this.state.hipsterList)
-      // })
     }
     else {
       this.setState({
         finalList: Wrangle(data),
         loading: null,
       });
-      // this.setState({
-      //   finalList: RemoveDuplicates(this.state.finalList)
-      // });
     }
-    console.log('finished compiles');
   });
 
   indie = (() => {
