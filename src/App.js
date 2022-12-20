@@ -76,7 +76,7 @@ class App extends React.Component {
       linksToDedup = {};
     for (let i = 0; i < returnedFromAPI.length; i++) items = items.concat(returnedFromAPI[i].albums.items);
     for (let i = 0; i < items.length; i++) {
-      if (items[i] === null || linksToDedup[items[i].external_urls.spotify]) {
+      if (items[i]?.images[1] === undefined || linksToDedup[items[i].external_urls.spotify]) {
         items.splice(i, 1);
         i--;
         continue;
@@ -111,11 +111,11 @@ class App extends React.Component {
   });
 
   indie = (() => {
-    this.setState({ indie: !this.state.indie });
     if (this.state.hipsterList.length === 0) {
       returnedFromAPI = [];
       for (let i = 0; i <= 950; i += 50) this.callAPI(i, '+tag:hipster');
     }
+    this.setState({ indie: !this.state.indie });
   })
 
   listToDisplay = (() => {
