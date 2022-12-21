@@ -20,6 +20,10 @@ class App extends React.Component {
       hipsterList: [],
       indie: false,
       loading: <p className="date">Please wait for albums to load...</p>,
+      standardColor: "#AD7D2D",
+      indieColor: "gray",
+      standardCursor: "default",
+      indieCursor: "pointer"
     };
     this.indie = this.indie.bind(this);
   }
@@ -110,12 +114,19 @@ class App extends React.Component {
     }
   });
 
-  indie = (() => {
+  indie = ((indieClick) => {
+    if (this.state.indie === indieClick) return;
     if (this.state.hipsterList.length === 0) {
       returnedFromAPI = [];
       for (let i = 0; i <= 950; i += 50) this.callAPI(i, '+tag:hipster');
     }
-    this.setState({ indie: !this.state.indie });
+    this.setState({
+      indie: !this.state.indie,
+      standardColor: this.state.indieColor,
+      indieColor: this.state.standardColor,
+      standardCursor: this.state.indieCursor,
+      indieCursor: this.state.standardCursor
+    });
   })
 
   listToDisplay = (() => {
@@ -125,10 +136,13 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
+        <div className="floating">
+          <button className="mode" style={{ color: this.state.standardColor, cursor: this.state.standardCursor }} onClick={() => this.indie(false)}>Standard</button>
+          <button className="mode" style={{ color: this.state.indieColor, cursor: this.state.indieCursor }} onClick={() => this.indie(true)}>Indie Mode</button>
+        </div>
         <img className="title title-main" src={Title} alt="update my ear" />
         <img className="title" src={Subtitle} alt="new releases from Spotify" />
         {this.state.loading}
-        {<button className="button" onClick={this.indie}>{this.state.indie ? 'Standard' : 'Indie Mode'}</button>}
         {this.listToDisplay().map(item => {
           for (let key in item) {
             return (

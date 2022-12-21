@@ -67,3 +67,17 @@ a:hover {
   border-radius: 4px;
   width: 85px;
 }
+
+.mode {
+  background: none;
+  border: none;
+  font-size: 18px;
+  font-style: italic;
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+.floating {
+  position: fixed;
+  margin-top: 5px;
+}
